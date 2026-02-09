@@ -1,0 +1,40 @@
+{
+    "buildings": {
+        "champ_ble": {
+            "display": "Champ de blé",
+            "action": "Récolter",
+            "production": "ble"
+        },
+        "moulin": {
+            "display": "Moulin",
+            "action": "Moudre",
+            "production": "farine",
+            "cost": "ble"
+        },
+        "boulangerie": {
+            "display": "Boulangerie",
+            "action": "Cuire",
+            "production": "pain",
+            "cost": "farine"
+        }
+    },
+    "products": {
+        "monnaie": {
+            "display": "Monnaie",
+            "icon": "💰",
+            "alternative_icon": "🪙"
+        },
+        "ble": {
+            "display": "Blé",
+            "icon": "🌾"
+        },
+        "farine": {
+            "display": "Farine",
+            "icon": "🍞"
+        },
+        "pain": {
+            "display": "Pain",
+            "icon": "🥖"
+        }
+    }
+}

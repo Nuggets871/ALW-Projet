@@ -1,0 +1,26 @@
+services:
+  site:
+    container_name: site
+    build:
+      context: ./conf/site
+      dockerfile: ../../Dockerfile
+    restart: on-failure
+    ports:
+      - 50180:80
+    volumes:
+      - ./src/site:/var/www/html
+      - ./src/Data:/var/www/html/Data
+    # user: "root:www-data"
+
+  webservice:
+    container_name: webservice
+    build:
+      context: ./conf/webservice
+      dockerfile: ../../Dockerfile
+    restart: on-failure
+    ports:
+      - 50181:80
+    volumes:
+      - ./src/webservice:/var/www/html
+      - ./src/Data:/var/www/html/Data
+    # user: "root:www-data"

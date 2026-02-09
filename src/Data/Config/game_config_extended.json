@@ -1,0 +1,129 @@
+{
+    "buildings": {
+        "champ_ble": {
+            "display": "Champ de blé",
+            "resource": "ble",
+            "action": "Récolter",
+            "initial_rate": 5,
+            "initial_time": 10,
+            "upgrade_cost_multiplier": 10
+        },
+        "puits": {
+            "display": "Puits",
+            "resource": "eau",
+            "action": "Puiser",
+            "initial_rate": 10,
+            "initial_time": 5,
+            "upgrade_cost_multiplier": 5,
+            "requirements": {
+                "champ_ble": 3
+            }
+        },
+        "poulailler": {
+            "display": "Poulailler",
+            "resource": "oeuf",
+            "action": "Ramasser",
+            "initial_rate": 2,
+            "initial_time": 20,
+            "upgrade_cost_multiplier": 15,
+            "requirements": {
+                "champ_ble": 5
+            }
+        },
+        "moulin": {
+            "display": "Moulin",
+            "resource": "farine",
+            "action": "Moudre",
+            "inputs": [
+                {
+                    "resource": "ble",
+                    "amount": 3
+                }
+            ],
+            "initial_rate": 1,
+            "initial_time": 15,
+            "upgrade_cost_multiplier": 12,
+            "requirements": {
+                "champ_ble": 5
+            }
+        },
+        "fournil": {
+            "display": "Fournil",
+            "resource": "pain",
+            "action": "Cuire",
+            "inputs": [
+                {
+                    "resource": "farine",
+                    "amount": 2
+                },
+                {
+                    "resource": "eau",
+                    "amount": 1
+                }
+            ],
+            "initial_rate": 1,
+            "initial_time": 30,
+            "upgrade_cost_multiplier": 20,
+            "requirements": {
+                "moulin": 2,
+                "puits": 2
+            }
+        },
+        "patisserie": {
+            "display": "Pâtisserie",
+            "resource": "gateau",
+            "action": "Confectionner",
+            "inputs": [
+                {
+                    "resource": "farine",
+                    "amount": 2
+                },
+                {
+                    "resource": "oeuf",
+                    "amount": 2
+                },
+                {
+                    "resource": "eau",
+                    "amount": 1
+                }
+            ],
+            "initial_rate": 1,
+            "initial_time": 60,
+            "upgrade_cost_multiplier": 50,
+            "requirements": {
+                "fournil": 3,
+                "poulailler": 2
+            }
+        }
+    },
+    "resources": {
+        "ble": {
+            "display": "Blé",
+            "icon": "🌾"
+        },
+        "eau": {
+            "display": "Eau",
+            "icon": "💧"
+        },
+        "oeuf": {
+            "display": "Oeuf",
+            "icon": "🥚"
+        },
+        "farine": {
+            "display": "Farine",
+            "icon": "🥡"
+        },
+        "pain": {
+            "display": "Pain",
+            "icon": "🥖"
+        },
+        "gateau": {
+            "display": "Gâteau",
+            "icon": "🍰"
+        },
+        "monnaie": {
+            "display": "Monnaie",
+            "icon": "🪙"
+        }
+    }
+}
