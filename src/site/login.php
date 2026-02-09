@@ -4,7 +4,7 @@ require_once "Utils/User.php";
 require_once "Utils/FileStorage.php";
 require_once "Utils/UserRepository.php";
 
-// session_start();
+session_start();
 $error = null;
 
 $repo = new UserRepository("Data/users.json");
@@ -23,7 +23,7 @@ if ($_SERVER['REQUEST_METHOD']==='POST') {
     $user = $repo->get($username) ?? '';
 
     if ($user && password_verify($password, $user->password_hash)) {
-        echo 'Connexion réussie !';
+        $_SESSION['user']=$user;
     } else {
         $error = 'Identifiants incorrect';
     }
@@ -95,9 +95,18 @@ if ($_SERVER['REQUEST_METHOD']==='POST') {
             content: "⚠ ";
             font-weight: bold;
         }
+        .loggedIn {
+            background-color: #F7F7F7;
+            border-radius: 5px;
+            width: 20%;
+            color: black;
+            padding: 2rem;
+            margin: auto auto;
+        }
     </style>
 </head>
 <body>
+    <?php if(!isset($_SESSION['user'])):  ?>
     <form action="" method="POST" class="loginForm">
         <h2>Connexion</h2>
         <input type="text" name="username" placeholder="Nom d'utilisateur" required autocomplete="off">
@@ -109,5 +118,15 @@ if ($_SERVER['REQUEST_METHOD']==='POST') {
 
         <button type="submit">Se connecter</button>
     </form>
+    <?php else: ?>
+    <div class="loggedIn">
+        <span> Connexion réussie !</span>
+        <br>
+        <a href="dashboard.php">
+            <button >Go to dashboard</button>
+        </a>
+    </div>
+
+    <?php endif ?>
 </body>
 </html>
