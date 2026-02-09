@@ -3,19 +3,20 @@
         "champ_ble": {
             "display": "Champ de blé",
             "action": "Récolter",
-            "production": "ble"
+            "production": "ble",
+            "cost": "ble"
         },
         "moulin": {
             "display": "Moulin",
             "action": "Moudre",
             "production": "farine",
-            "cost": "ble"
+            "cost": "farine"
         },
         "boulangerie": {
             "display": "Boulangerie",
             "action": "Cuire",
             "production": "pain",
-            "cost": "farine"
+            "cost": "pain"
         }
     },
     "products": {
