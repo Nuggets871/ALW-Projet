@@ -4,5 +4,8 @@
     },
     "elfo": {
         "password_hash": "$2y$10$Na6K/lKt5ogAmdt.19yWKeXvZyJZ/Q0iIUYvFZo7AtFCRfQKyFmqW"
+    },
+    "ggez": {
+        "password_hash": "$2y$12$P366LNQ7A4PEnSMPv5YqfOuo/oaETUh.E0hENxuB3zZAwOUBNnZKu"
     }
 }

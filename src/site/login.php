@@ -16,7 +16,18 @@ $repo = new UserRepository("Data/users.json");
 // var_dump($_SERVER['REQUEST_METHOD']);
 
 // TODO: gérer ici la connexion lors de la soumission du formulaire
+if ($_SERVER['REQUEST_METHOD']==='POST') {
+    $username = $_POST['username'];
+    $password = $_POST['password'];
 
+    $user = $repo->get($username) ?? '';
+
+    if ($user && password_verify($password, $user->password_hash)) {
+        echo 'Connexion réussie !';
+    } else {
+        $error = 'Identifiants incorrect';
+    }
+}
 
 ?><!DOCTYPE html>
 <html lang="fr">
@@ -92,7 +103,7 @@ $repo = new UserRepository("Data/users.json");
         <input type="text" name="username" placeholder="Nom d'utilisateur" required autocomplete="off">
         <input type="password" name="password" placeholder="Mot de passe" required autocomplete="off">
 
-        <?php if (empty($error) == false) { ?>
+        <?php if (!empty($error)) { ?>
             <div class="error"><?php echo $error; ?></div>
         <?php } ?>
 
