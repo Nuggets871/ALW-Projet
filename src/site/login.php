@@ -24,6 +24,14 @@ if ($_SERVER['REQUEST_METHOD']==='POST') {
 
     if ($user && password_verify($password, $user->password_hash)) {
         $_SESSION['user']=$user;
+
+        $saveFile = 'Data/Saves/' . $user->login . '.json';
+        if (!file_exists($saveFile)) {
+            copy('Data/Config/save_initial.json', $saveFile);
+        }
+
+        header('Location: dashboard.php');
+        exit;
     } else {
         $error = 'Identifiants incorrect';
     }
