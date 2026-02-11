@@ -1,8 +1,8 @@
 <?php
 
-// namespace App\Repositories;
+namespace App\Repositories;
 
-// use App\Utilities\FileStorage;
+use App\Utilities\FileStorage;
 
 class SaveRepository
 {

@@ -1,6 +1,6 @@
 <?php
 
-// namespace App\Utilities;
+namespace App\Utilities;
 
 class FileStorage {
     private string $basePath;
