@@ -1,13 +1,13 @@
 {
     "inventory": {
-        "ble": 0,
-        "farine": 0,
-        "pain": 0,
+        "ble": 22,
+        "farine": 7,
+        "pain": 7,
         "monnaie": 10
     },
     "buildings": {
         "champ_ble": {
-            "level": 1,
+            "level": 7,
             "last_harvest": null
         },
         "moulin": {

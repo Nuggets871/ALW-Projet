@@ -27,6 +27,36 @@ $saveData = json_decode(file_get_contents($saveFile), true);
 $inventory = $saveData['inventory'];
 $userBuildings = $saveData['buildings'];
 
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (isset($_POST['action'], $_POST['building_id'])) {
+        $action = $_POST['action'];
+        $buildingId = $_POST['building_id'];
+
+        if ($action === 'harvest' && isset($buildings->{$buildingId})) {
+            $resource = $buildings->{$buildingId}->production;
+            $level = $userBuildings[$buildingId]['level'] ?? 1;
+            $inventory[$resource] = ($inventory[$resource] ?? 0) + $level;
+        } elseif ($action === 'upgrade' && isset($buildings->{$buildingId})) {
+            $costResource = $buildings->{$buildingId}->cost;
+            $currentLevel = $userBuildings[$buildingId]['level'] ?? 1;
+            $nextLevel = $currentLevel + 1;
+            $cost = $gameConfigRepository->getUpgradeCost($buildingId, $nextLevel);
+
+            if (($inventory[$costResource] ?? 0) >= $cost) {
+                $inventory[$costResource] -= $cost;
+                $userBuildings[$buildingId]['level'] = $nextLevel;
+            }
+        }
+
+        $saveData['inventory'] = $inventory;
+        $saveData['buildings'] = $userBuildings;
+        file_put_contents($saveFile, json_encode($saveData, JSON_PRETTY_PRINT));
+
+        header('Location: dashboard.php');
+        exit;
+    }
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -34,21 +64,7 @@ $userBuildings = $saveData['buildings'];
 <head>
     <meta charset="UTF-8">
     <title>Maquette Ferme Manager</title>
-    <style>
-        /* Styles indicatifs (non imposés) */
-        article {
-            border: 1px solid #ccc;
-            padding: 10px;
-            margin: 5px;
-            display: inline-block;
-            width: 200px;
-            vertical-align: top;
-        }
-
-        .icon {
-            font-size: 2em;
-        }
-    </style>
+    <link rel="stylesheet" href="Public/style.css">
 
     <!-- Intégration du JS (Partie 2.1) -->
     <!-- <script src="Public/JS/FermeEngine.js" defer></script> -->
@@ -79,17 +95,26 @@ $userBuildings = $saveData['buildings'];
         $level = $userBuildings[$building]['level'] ?? 1;
         $nextLevel = $level + 1;
         $upgradeCost = $gameConfigRepository->getUpgradeCost($building, $nextLevel);
+        $canUpgrade = ($inventory[$data->cost] ?? 0) >= $upgradeCost;
         ?>
     <article id="buildings-<?php echo $building?>">
-        <h3><?php echo $data->display ?> (Niv. <output class="level"><?php echo $level ?></output></h3>
+        <h3><?php echo $data->display ?> (Niv. <output class="level"><?php echo $level ?></output>)</h3>
 
-        <button class="harvest"><?php echo $data->action ?></button>
+        <form method="POST">
+            <input type="hidden" name="action" value="harvest">
+            <input type="hidden" name="building_id" value="<?php echo $building ?>">
+            <button type="submit" class="harvest"><?php echo $data->action ?></button>
+        </form>
 
         <?php if (isset($data->cost, $products->{$data->cost})): ?>
-        <button class="upgrade">
-            Améliorer <br>
-            Coût : <output class="cost"><?php echo $upgradeCost ?> <?php echo $products->{$data->cost}->icon ?></output>
-        </button>
+        <form method="POST">
+            <input type="hidden" name="action" value="upgrade">
+            <input type="hidden" name="building_id" value="<?php echo $building ?>">
+            <button type="submit" class="upgrade" <?php echo !$canUpgrade ? 'disabled' : '' ?>>
+                Améliorer <br>
+                Coût : <output class="cost"><?php echo $upgradeCost ?> <?php echo $products->{$data->cost}->icon ?></output>
+            </button>
+        </form>
         <?php endif; ?>
     </article>
 
