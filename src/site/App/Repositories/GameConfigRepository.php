@@ -18,9 +18,9 @@ class GameConfigRepository
         $file = basename($filePath);
 
         $this->storage = new FileStorage($dir);
-        $this->config = $this->storage->readJson($file) ?? [];
+        $this->config = $this->storage->readJson($file) ?? (object)[];
 
-        if (empty($this->config)) {
+        if (empty((array)$this->config)) {
             throw new Exception("Fichier de configuration introuvable ou vide : " . $filePath);
         }
     }

@@ -13,6 +13,8 @@
         <h3>{{ data.icon }} {{ data.display }}</h3>
         <div>Stock : <output class="stock">{{ inventory[product] ?? 0 }}</output></div>
     </article>
+    {% else %}
+        <p>Aucun produit dans l'inventaire.</p>
     {% endfor %}
 
 </section>
@@ -23,7 +25,7 @@
     <h2>Bâtiments</h2>
 
     {% for building, data in buildings %}
-        {% set level = attribute(userBuildings, building).level ?? 1 %}
+        {% set level = userBuildings[building].level ?? 1 %}
         {% set nextLevel = level + 1 %}
         {% set upgradeCost = gameConfigRepository.getUpgradeCost(building, nextLevel) %}
         {% set canUpgrade = (inventory[data.cost] ?? 0) >= upgradeCost %}
@@ -36,17 +38,19 @@
             <button type="submit" class="harvest">{{ data.action }}</button>
         </form>
 
-        {% if data.cost is defined and attribute(products, data.cost) is defined %}
+        {% if data.cost is defined and products[data.cost] is defined %}
         <form method="POST">
             <input type="hidden" name="action" value="upgrade">
             <input type="hidden" name="building_id" value="{{ building }}">
             <button type="submit" class="upgrade" {{ not canUpgrade ? 'disabled' : '' }}>
                 Améliorer <br>
-                Coût : <output class="cost">{{ upgradeCost }} {{ attribute(products, data.cost).icon }}</output>
+                Coût : <output class="cost">{{ upgradeCost }} {{ products[data.cost].icon }}</output>
             </button>
         </form>
         {% endif %}
     </article>
+    {% else %}
+        <p>Aucun bâtiment disponible.</p>
     {% endfor %}
 
 </section>

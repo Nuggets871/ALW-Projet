@@ -20,6 +20,14 @@ class UserController extends AbstractController
         return new GameConfigRepository('Data/Config/game_config.json');
     }
 
+    /**
+     * Converts nested objects to arrays recursively, to ensure it works reliably in Twig.
+     */
+    private function toArray($data)
+    {
+        return json_decode(json_encode($data), true);
+    }
+
     public function login()
     {
         $error = null;
@@ -58,9 +66,9 @@ class UserController extends AbstractController
         $saveRepo = $this->getSaveRepo();
         $gameRepo = $this->getGameRepo();
 
+        $save = $saveRepo->load($user->login);
         $products = $gameRepo->getProducts();
         $buildings = $gameRepo->getBuildings();
-        $save = $saveRepo->load($user->login);
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (isset($_POST['action'], $_POST['building_id'])) {
@@ -93,10 +101,11 @@ class UserController extends AbstractController
             }
         }
 
-        $this->app->view()->setParam('products', $products);
-        $this->app->view()->setParam('buildings', $buildings);
-        $this->app->view()->setParam('inventory', (array)$save->inventory);
-        $this->app->view()->setParam('userBuildings', (array)$save->buildings);
+        // Convert all data to arrays for Twig to ensure iterateability and access safety
+        $this->app->view()->setParam('products', $this->toArray($products));
+        $this->app->view()->setParam('buildings', $this->toArray($buildings));
+        $this->app->view()->setParam('inventory', $this->toArray($save->inventory ?? []));
+        $this->app->view()->setParam('userBuildings', $this->toArray($save->buildings ?? []));
         $this->app->view()->setParam('gameConfigRepository', $gameRepo);
         $this->app->view()->render('dashboard.html.twig');
     }
@@ -109,4 +118,3 @@ class UserController extends AbstractController
         exit;
     }
 }
-
