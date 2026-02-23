@@ -6,6 +6,7 @@ use App\Application;
 
 ini_set('display_errors', 'On');
 
+require_once('vendor/autoload.php');
 require_once('Framework/autoloader.php');
 
 session_start();

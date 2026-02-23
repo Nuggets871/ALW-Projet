@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Tableau de Bord</title>
+
+    <link rel="stylesheet" href="Public/style.css">
+</head>
+<body>
+
+<h1>Ferme Manager</h1>
+
+<section id="inventory">
+    <h2>Inventaire</h2>
+
+    {% for product, data in products %}
+    <article id="product-{{ product }}">
+        <h3>{{ data.icon }} {{ data.display }}</h3>
+        <div>Stock : <output class="stock">{{ inventory[product] ?? 0 }}</output></div>
+    </article>
+    {% endfor %}
+
+</section>
+
+<hr>
+
+<section id="buildings">
+    <h2>Bâtiments</h2>
+
+    {% for building, data in buildings %}
+        {% set level = userBuildings[building].level ?? 1 %}
+        {% set nextLevel = level + 1 %}
+        {% set upgradeCost = gameConfigRepository.getUpgradeCost(building, nextLevel) %}
+        {% set canUpgrade = (inventory[data.cost] ?? 0) >= upgradeCost %}
+    <article id="building-{{ building }}">
+        <h3>{{ data.display }} (Niv. <output class="level">{{ level }}</output>)</h3>
+
+        <form method="POST">
+            <input type="hidden" name="action" value="harvest">
+            <input type="hidden" name="building_id" value="{{ building }}">
+            <button type="submit" class="harvest">{{ data.action }}</button>
+        </form>
+
+        {% if data.cost is defined and attribute(products, data.cost) is defined %}
+        <form method="POST">
+            <input type="hidden" name="action" value="upgrade">
+            <input type="hidden" name="building_id" value="{{ building }}">
+            <button type="submit" class="upgrade" {{ not canUpgrade ? 'disabled' : '' }}>
+                Améliorer <br>
+                Coût : <output class="cost">{{ upgradeCost }} {{ attribute(products, data.cost).icon }}</output>
+            </button>
+        </form>
+        {% endif %}
+    </article>
+    {% endfor %}
+
+</section>
+
+</body>
+</html>
+

@@ -37,7 +37,7 @@ class SaveRepository
             $this->initSave($username);
         }
         if (!isset($this->loadedSaves[$username])) {
-            $this->loadedSaves[$username] = $this->storage->readJson($username . ".json") ?? [];
+            $this->loadedSaves[$username] = $this->storage->readJson($username . ".json") ?? (object)[];
         }
         return $this->loadedSaves[$username];
     }
@@ -53,54 +53,23 @@ class SaveRepository
         return $save->inventory ?? (object)[];
     }
 
-    public function getProduct(string $username, string $product): int
-    {
-        $inventory = $this->getInventory($username);
-        return $inventory[$product] ?? 0;
-    }
-
-    public function setProduct(string $username, string $product, int $value): void
+    public function setInventory(string $username, object $inventory): void
     {
         $save = $this->load($username);
-        $save->inventory->{$product} = $value;
+        $save->inventory = $inventory;
         $this->save($username, $save);
     }
 
     public function getBuildings(string $username): object
     {
         $save = $this->load($username);
-        return $save->buildings ?? [];
+        return $save->buildings ?? (object)[];
     }
 
-    public function getLevel(string $username, string $generator): int
+    public function setBuildings(string $username, object $buildings): void
     {
         $save = $this->load($username);
-        foreach ($save->buildings as $b) {
-            if ($b->id === $generator) {
-                return $b->level;
-            }
-        }
-        return 0;
-    }
-
-    public function setLevel(string $username, string $generator, int $value): void
-    {
-        $save = $this->load($username);
-        $found = false;
-        foreach ($save['buildings'] as &$b) {
-            if ($b['id'] === $generator) {
-                $b['level'] = $value;
-                $found = true;
-                break;
-            }
-        }
-        if (!$found) {
-            $save['buildings'][] = [
-                'id' => $generator,
-                'level' => $value,
-                'last_harvest' => null
-            ];
-        }
+        $save->buildings = $buildings;
         $this->save($username, $save);
     }
 }

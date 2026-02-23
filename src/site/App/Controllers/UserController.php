@@ -3,11 +3,23 @@
 namespace App\Controllers;
 
 use App\Repositories\GameConfigRepository;
+use App\Repositories\SaveRepository;
 use App\Repositories\UserRepository;
 use CPE\Framework\AbstractController;
+use App\Models\User;
 
 class UserController extends AbstractController
 {
+    private function getSaveRepo(): SaveRepository
+    {
+        return new SaveRepository('Data/Saves/', 'Data/Config/save_initial.json');
+    }
+
+    private function getGameRepo(): GameConfigRepository
+    {
+        return new GameConfigRepository('Data/Config/game_config.json');
+    }
+
     public function login()
     {
         $error = null;
@@ -21,11 +33,7 @@ class UserController extends AbstractController
 
             if ($user && password_verify($password, $user->password_hash)) {
                 $_SESSION['user'] = $user;
-
-                $saveFile = 'Data/Saves/' . $user->login . '.json';
-                if (!file_exists($saveFile)) {
-                    copy('Data/Config/save_initial.json', $saveFile);
-                }
+                $this->getSaveRepo()->initSave($user->login);
 
                 header('Location: ' . $this->app->view()->buildRoute('/dashboard'));
                 exit;
@@ -35,7 +43,7 @@ class UserController extends AbstractController
         }
 
         $this->app->view()->setParam('error', $error);
-        $this->app->view()->render('login.tpl.php');
+        $this->app->view()->render('login.html.twig');
     }
 
     public function dashboard()
@@ -47,19 +55,12 @@ class UserController extends AbstractController
 
         /** @var User $user */
         $user = $_SESSION['user'];
-        $gameConfigRepository = new GameConfigRepository('Data/Config/game_config.json');
+        $saveRepo = $this->getSaveRepo();
+        $gameRepo = $this->getGameRepo();
 
-        $products = $gameConfigRepository->getProducts();
-        $buildings = $gameConfigRepository->getBuildings();
-
-        $saveFile = 'Data/Saves/' . $user->login . '.json';
-        if (!file_exists($saveFile)) {
-            copy('Data/Config/save_initial.json', $saveFile);
-        }
-
-        $saveData = json_decode(file_get_contents($saveFile), true);
-        $inventory = $saveData['inventory'] ?? [];
-        $userBuildings = $saveData['buildings'] ?? [];
+        $products = $gameRepo->getProducts();
+        $buildings = $gameRepo->getBuildings();
+        $save = $saveRepo->load($user->login);
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (isset($_POST['action'], $_POST['building_id'])) {
@@ -68,22 +69,24 @@ class UserController extends AbstractController
 
                 if ($action === 'harvest' && isset($buildings->{$buildingId})) {
                     $resource = $buildings->{$buildingId}->production;
-                    $level = $userBuildings[$buildingId]['level'] ?? 1;
-                    $inventory[$resource] = ($inventory[$resource] ?? 0) + $level;
+                    $level = $save->buildings->{$buildingId}->level ?? 1;
+                    $save->inventory->{$resource} = ($save->inventory->{$resource} ?? 0) + $level;
                 } elseif ($action === 'upgrade' && isset($buildings->{$buildingId})) {
-                    $nextLevel = ($userBuildings[$buildingId]['level'] ?? 1) + 1;
-                    $cost = $gameConfigRepository->getUpgradeCost($buildingId, $nextLevel);
+                    $currentLevel = $save->buildings->{$buildingId}->level ?? 1;
+                    $nextLevel = $currentLevel + 1;
+                    $cost = $gameRepo->getUpgradeCost($buildingId, $nextLevel);
                     $costResource = $buildings->{$buildingId}->cost;
 
-                    if (($inventory[$costResource] ?? 0) >= $cost) {
-                        $inventory[$costResource] -= $cost;
-                        $userBuildings[$buildingId]['level'] = $nextLevel;
+                    if (($save->inventory->{$costResource} ?? 0) >= $cost) {
+                        $save->inventory->{$costResource} -= $cost;
+                        if (!isset($save->buildings->{$buildingId})) {
+                            $save->buildings->{$buildingId} = (object)['level' => 1];
+                        }
+                        $save->buildings->{$buildingId}->level = $nextLevel;
                     }
                 }
 
-                $saveData['inventory'] = $inventory;
-                $saveData['buildings'] = $userBuildings;
-                file_put_contents($saveFile, json_encode($saveData, JSON_PRETTY_PRINT));
+                $saveRepo->save($user->login, $save);
 
                 header('Location: ' . $this->app->view()->buildRoute('/dashboard'));
                 exit;
@@ -92,10 +95,10 @@ class UserController extends AbstractController
 
         $this->app->view()->setParam('products', $products);
         $this->app->view()->setParam('buildings', $buildings);
-        $this->app->view()->setParam('inventory', $inventory);
-        $this->app->view()->setParam('userBuildings', $userBuildings);
-        $this->app->view()->setParam('gameConfigRepository', $gameConfigRepository);
-        $this->app->view()->render('dashboard.tpl.php');
+        $this->app->view()->setParam('inventory', (array)$save->inventory);
+        $this->app->view()->setParam('userBuildings', (array)$save->buildings);
+        $this->app->view()->setParam('gameConfigRepository', $gameRepo);
+        $this->app->view()->render('dashboard.html.twig');
     }
 }
 

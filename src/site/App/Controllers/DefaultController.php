@@ -23,6 +23,6 @@ class DefaultController extends AbstractController
     public function error404()
     {
         http_response_code(404);
-        $this->app->view()->render('404.tpl.php');
+        $this->app->view()->render('404.html.twig');
     }
 }

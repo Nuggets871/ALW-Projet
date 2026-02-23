@@ -27,12 +27,12 @@ class GameConfigRepository
 
     public function getProducts(): object
     {
-        return $this->config->products ?? [];
+        return $this->config->products ?? (object)[];
     }
 
     public function getBuildings(): object
     {
-        return $this->config->buildings ?? [];
+        return $this->config->buildings ?? (object)[];
     }
 
     public function getBuilding(string $name): ?object

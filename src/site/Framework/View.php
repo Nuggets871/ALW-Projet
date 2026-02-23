@@ -3,6 +3,9 @@
 namespace CPE\Framework;
 
 use LogicException;
+use Twig\Environment;
+use Twig\Loader\FilesystemLoader;
+use Twig\TwigFunction;
 
 /**
  * View handler
@@ -17,6 +20,7 @@ class View extends AbstractComponent
     protected object $template;
     protected string $templatePath;
     protected bool $ApacheURLRewriting;
+    protected Environment $twig;
 
     public function __construct(AbstractApplication $app, $ApacheURLRewriting)
     {
@@ -35,6 +39,20 @@ class View extends AbstractComponent
         $this->setParam("templateUrl", $this->rootUrl . 'App/Templates/');
         $this->setParam("rootUrl", $this->rootUrl);
         $this->setParam("baseUrl", $this->baseUrl);
+
+        $loader = new FilesystemLoader($this->templatePath);
+        $this->twig = new Environment($loader, [
+            'cache' => false, // Set to a path if you want to enable caching
+        ]);
+
+        // Add global parameters to Twig
+        foreach ($this->params as $name => $value) {
+            $this->twig->addGlobal($name, $value);
+        }
+
+        $this->twig->addFunction(new TwigFunction('buildRoute', function ($routeFormat, ...$args) {
+            return $this->buildRoute($routeFormat, ...$args);
+        }));
     }
 
     /**
@@ -45,6 +63,9 @@ class View extends AbstractComponent
     public function setParam(string $name, $value)
     {
         $this->params[$name] = $value;
+        if (isset($this->twig)) {
+            $this->twig->addGlobal($name, $value);
+        }
     }
 
     /**
@@ -64,6 +85,12 @@ class View extends AbstractComponent
      */
     public function render(string $name)
     {
+        // Use Twig if the extension is .twig
+        if (str_ends_with($name, '.twig')) {
+            echo $this->twig->render($name, array_merge($this->params, ['session' => $_SESSION]));
+            exit;
+        }
+
         //template file not found
         if (file_exists($this->templatePath . $name) === false) {
             throw new LogicException(sprintf('Template not found: "%s"', $name));
