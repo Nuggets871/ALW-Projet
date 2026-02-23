@@ -1,12 +1,8 @@
-<!doctype html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <title>Connexion</title>
+{% extends 'base.html.twig' %}
 
-    <link rel="stylesheet" href="Public/style.css">
-</head>
-<body>
+{% block title %}Connexion - Ferme Manager{% endblock %}
+
+{% block content %}
 {% if session.user is not defined %}
 <form action="" method="POST" class="loginForm">
     <h2>Connexion</h2>
@@ -28,6 +24,5 @@
     </a>
 </div>
 {% endif %}
-</body>
-</html>
+{% endblock %}
 

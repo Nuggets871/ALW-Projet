@@ -1,13 +1,8 @@
-<!doctype html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <title>Tableau de Bord</title>
+{% extends 'base.html.twig' %}
 
-    <link rel="stylesheet" href="Public/style.css">
-</head>
-<body>
+{% block title %}Tableau de Bord - Ferme Manager{% endblock %}
 
+{% block content %}
 <h1>Ferme Manager</h1>
 
 <section id="inventory">
@@ -28,7 +23,7 @@
     <h2>Bâtiments</h2>
 
     {% for building, data in buildings %}
-        {% set level = userBuildings[building].level ?? 1 %}
+        {% set level = attribute(userBuildings, building).level ?? 1 %}
         {% set nextLevel = level + 1 %}
         {% set upgradeCost = gameConfigRepository.getUpgradeCost(building, nextLevel) %}
         {% set canUpgrade = (inventory[data.cost] ?? 0) >= upgradeCost %}
@@ -55,7 +50,5 @@
     {% endfor %}
 
 </section>
-
-</body>
-</html>
+{% endblock %}
 

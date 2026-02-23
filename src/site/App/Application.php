@@ -25,6 +25,7 @@ class Application extends AbstractApplication
         $this->router->map('POST', '/dashboard.php', UserController::class, 'dashboard');
         $this->router->map('GET', '/dashboard', UserController::class, 'dashboard');
         $this->router->map('POST', '/dashboard', UserController::class, 'dashboard');
+        $this->router->map('GET', '/logout', UserController::class, 'logout');
         $this->router->map('GET', '/test/{int:nombre}', DefaultController::class, 'test');
 
         $route = $this->router->findRoute();

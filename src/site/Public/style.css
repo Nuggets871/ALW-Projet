@@ -140,3 +140,55 @@ code, pre {
     font-family: 'Courier New', Courier, monospace;
 }
 
+/* Navigation Styles */
+header {
+    background-color: var(--primary-color);
+    padding: 10px 0;
+    margin: -20px -20px 20px -20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+
+nav a {
+    color: white !important;
+    font-weight: bold;
+    padding: 5px 10px;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+}
+
+nav a:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    text-decoration: none;
+}
+
+.user-status {
+    color: #ecf0f1;
+    font-size: 0.9rem;
+}
+
+.logout-btn {
+    background-color: var(--error-color);
+}
+
+.logout-btn:hover {
+    background-color: #c0392b !important;
+}
+
+footer {
+    text-align: center;
+    margin-top: 40px;
+    padding: 20px;
+    border-top: 1px solid var(--border-color);
+    color: #7f8c8d;
+    font-size: 0.8rem;
+}

@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Ferme Manager{% endblock %}</title>
+    <link rel="stylesheet" href="Public/style.css">
+</head>
+<body>
+
+<header>
+    <nav>
+        <ul>
+            <li><a href="{{ buildRoute('/') }}">Accueil</a></li>
+            {% if session.user is defined %}
+                <li><a href="{{ buildRoute('/dashboard') }}">Tableau de Bord</a></li>
+                <li class="user-status">Connecté en tant que : <strong>{{ session.user.login }}</strong></li>
+                <li><a href="{{ buildRoute('/logout') }}" class="logout-btn">Déconnexion</a></li>
+            {% else %}
+                <li><a href="{{ buildRoute('/login') }}">Connexion</a></li>
+                <li class="user-status">Non connecté</li>
+            {% endif %}
+        </ul>
+    </nav>
+</header>
+
+<main>
+    {% block content %}{% endblock %}
+</main>
+
+<footer>
+    <p>&copy; 2026 Ferme Manager - ALW Project</p>
+</footer>
+
+</body>
+</html>
+

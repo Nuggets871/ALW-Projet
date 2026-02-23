@@ -100,5 +100,13 @@ class UserController extends AbstractController
         $this->app->view()->setParam('gameConfigRepository', $gameRepo);
         $this->app->view()->render('dashboard.html.twig');
     }
+
+    public function logout()
+    {
+        unset($_SESSION['user']);
+        session_destroy();
+        header('Location: ' . $this->app->view()->buildRoute('/login'));
+        exit;
+    }
 }
 
