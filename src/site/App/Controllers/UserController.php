@@ -45,6 +45,7 @@ class UserController extends AbstractController
             exit;
         }
 
+        /** @var User $user */
         $user = $_SESSION['user'];
         $gameConfigRepository = new GameConfigRepository('Data/Config/game_config.json');
 
@@ -70,10 +71,9 @@ class UserController extends AbstractController
                     $level = $userBuildings[$buildingId]['level'] ?? 1;
                     $inventory[$resource] = ($inventory[$resource] ?? 0) + $level;
                 } elseif ($action === 'upgrade' && isset($buildings->{$buildingId})) {
-                    $costResource = $buildings->{$buildingId}->cost;
-                    $currentLevel = $userBuildings[$buildingId]['level'] ?? 1;
-                    $nextLevel = $currentLevel + 1;
+                    $nextLevel = ($userBuildings[$buildingId]['level'] ?? 1) + 1;
                     $cost = $gameConfigRepository->getUpgradeCost($buildingId, $nextLevel);
+                    $costResource = $buildings->{$buildingId}->cost;
 
                     if (($inventory[$costResource] ?? 0) >= $cost) {
                         $inventory[$costResource] -= $cost;

@@ -1,116 +1,142 @@
-/*
-    Palette :
-    main blue #0bbbef
-    dark blue #0086b7
-    light blue #c7f8ff
-    brown #783300
-*/
 :root {
-    color-scheme: dark;
-    background-color: #333;
-    font-family: sans-serif;
+    --primary-color: #2c3e50;
+    --accent-color: #3498db;
+    --bg-color: #f4f7f6;
+    --card-bg: #ffffff;
+    --text-color: #333333;
+    --border-color: #e1e8ed;
+    --error-color: #e74c3c;
+    --success-color: #27ae60;
 }
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 20px;
+    line-height: 1.6;
+}
+
 a, a:visited {
-    color: #0bbbef;
+    color: var(--accent-color);
+    text-decoration: none;
 }
-code, pre {
-    color: #4AF626;
-    background-color: black;
-    font-weight: bold;
-    padding: .1em .3em;
-    border-radius: .3em;
+
+a:hover {
+    text-decoration: underline;
 }
-.loginForm {
-    background-color: black;
-    width: 25em;
-    border: .1em solid #0086b7;
-    border-radius: .5em;
-    margin: 2em auto;
-    padding: 1em;
-}
+
 h1, h2, h3, h4, h5, h6 {
-    color: #0bbbef;
+    color: var(--primary-color);
+    margin-top: 0;
 }
-form h2 {
-    margin: 0 0 .5em;
+
+.loginForm, .loggedIn {
+    background-color: var(--card-bg);
+    width: 100%;
+    max-width: 400px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    margin: 40px auto;
+    padding: 30px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
-form button {
-    margin: .5em 0 0;
+
+.loggedIn {
+    text-align: center;
 }
+
 input {
     display: block;
     width: 100%;
     box-sizing: border-box;
-    margin: .5em 0;
-    font-size: 1em;
+    margin: 10px 0;
+    padding: 10px;
+    font-size: 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
 }
-button {
-    font-size: 1em;
-    cursor: pointer;
-}
-.error {
-    border-radius: .2em;
-    background-color: darkred;
-    padding: 0 .5em;
-    font-style: italic;
-}
-.error::before {
-    content: "⚠ ";
-    font-weight: bold;
-}
-.loggedIn {
-    background-color: #000;
-    border: .1em solid #0086b7;
-    border-radius: 5px;
-    width: 25em;
+
+form button, button {
+    display: inline-block;
+    width: 100%;
+    padding: 10px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 4px;
+    background-color: var(--accent-color);
     color: white;
-    padding: 2rem;
-    margin: 2em auto;
-    text-align: center;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+form button:hover, button:hover {
+    background-color: #2980b9;
+}
+
+.error {
+    color: white;
+    background-color: var(--error-color);
+    padding: 10px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+    font-size: 0.9rem;
 }
 
 /* Dashboard Styles */
+#inventory, #buildings {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+    margin: 20px 0;
+}
+
 article {
-    border: 1px solid #0086b7;
-    background-color: black;
-    padding: 10px;
-    margin: 5px;
-    display: inline-block;
-    width: 200px;
-    vertical-align: top;
-    border-radius: .5em;
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 20px;
+    width: 220px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
 }
 
 .icon {
-    font-size: 2em;
-}
-
-#inventory, #buildings {
-    margin: 1em;
-}
-
-button.upgrade {
-    background-color: #333;
-    color: white;
-    border: 1px solid #0bbbef;
-    border-radius: 3px;
-    padding: 5px;
-    margin-top: 5px;
-    width: 100%;
-}
-
-button.upgrade:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
+    font-size: 3rem;
+    margin-bottom: 15px;
 }
 
 button.harvest {
-    background-color: #0086b7;
-    color: white;
-    border: none;
-    border-radius: 3px;
-    padding: 5px 10px;
-    width: 100%;
-    margin-bottom: 5px;
+    background-color: var(--success-color);
+    margin-bottom: 10px;
+}
+
+button.harvest:hover {
+    background-color: #219150;
+}
+
+button.upgrade {
+    background-color: var(--primary-color);
+}
+
+button.upgrade:disabled {
+    background-color: #bdc3c7;
+    cursor: not-allowed;
+}
+
+button.upgrade:not(:disabled):hover {
+    background-color: #34495e;
+}
+
+code, pre {
+    background-color: #eee;
+    padding: 2px 4px;
+    border-radius: 4px;
+    font-family: 'Courier New', Courier, monospace;
 }
 

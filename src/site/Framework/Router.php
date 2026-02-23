@@ -75,7 +75,7 @@ class Router extends AbstractComponent
         //add other parameters given after '?' in a subarray
         $get = $_GET;
         unset($get[$this->routeParamName]);
-        if (empty($get) === false) {
+        if (empty($get) === false && !is_null($foundRoute)) {
             $foundRoute->foundParams['get'] = $get;
         }
 
